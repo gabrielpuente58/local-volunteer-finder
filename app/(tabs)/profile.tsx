@@ -1,0 +1,88 @@
+import { FontAwesome } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import { Image, StyleSheet, Text, View } from "react-native";
+import Button from "../../components/Button";
+
+export default function Profile() {
+  const [imageUri, setImageUri] = useState<string | null>(null);
+  const router = useRouter();
+
+  const pickFromGallery = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+    if (!result.canceled) setImageUri(result.assets[0].uri);
+  };
+
+  const takePhoto = async () => {
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+    if (!result.canceled) setImageUri(result.assets[0].uri);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Profile Picture</Text>
+      {imageUri ? (
+        <Image source={{ uri: imageUri }} style={styles.image} />
+      ) : (
+        <View style={[styles.image, styles.placeholder]}>
+          <FontAwesome name="user" size={90} color="#ccc" />
+        </View>
+      )}
+      <Button
+        label="Edit Picture"
+        onPress={() => router.push("../modal")}
+        style={({ pressed }) => [
+          {
+            marginBottom: 10,
+            backgroundColor: pressed ? "#005BBB" : "#007AFF",
+            padding: 10,
+            borderRadius: 5,
+            transform: [{ scale: pressed ? 0.97 : 1 }],
+          },
+        ]}
+        textStyle={{ color: "white", fontWeight: "600", textAlign: "center" }}
+      />
+    </View>
+  );
+}
+
+const AVATAR_SIZE = 200;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+  title: {
+    fontSize: 18,
+    marginBottom: 10,
+    fontWeight: "600",
+  },
+  buttons: {
+    flexDirection: "row",
+    marginTop: 16,
+  },
+  image: {
+    width: AVATAR_SIZE,
+    height: AVATAR_SIZE,
+    borderRadius: AVATAR_SIZE / 2,
+    marginTop: 12,
+  },
+  placeholder: {
+    backgroundColor: "#f2f2f2", // light gray like iOS default
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
