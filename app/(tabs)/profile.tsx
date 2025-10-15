@@ -1,38 +1,53 @@
 import { FontAwesome } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import Button from "../../components/Button";
+import { useProfileImage } from "../../store/profileImageStore";
+
+const AVATAR_SIZE = 200;
 
 export default function Profile() {
-  const [imageUri, setImageUri] = useState<string | null>(null);
   const router = useRouter();
+  const { uri, loading } = useProfileImage();
 
-  const pickFromGallery = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-    if (!result.canceled) setImageUri(result.assets[0].uri);
-  };
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
-  const takePhoto = async () => {
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-    if (!result.canceled) setImageUri(result.assets[0].uri);
-  };
+  // ----------------------------------------------------------------
+  // UNUSED BUT MAYBE USEFUL LATER:
+  // const [imageUri, setImageUri] = useState<string | null>(null);
+
+  // const pickFromGallery = async () => {
+  //   const result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //     allowsEditing: true,
+  //     aspect: [1, 1],
+  //     quality: 1,
+  //   });
+  //   if (!result.canceled) setImageUri(result.assets[0].uri);
+  // };
+
+  // const takePhoto = async () => {
+  //   const result = await ImagePicker.launchCameraAsync({
+  //     allowsEditing: true,
+  //     aspect: [1, 1],
+  //     quality: 1,
+  //   });
+  //   if (!result.canceled) setImageUri(result.assets[0].uri);
+  // };
+  // ----------------------------------------------------------------
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile Picture</Text>
-      {imageUri ? (
-        <Image source={{ uri: imageUri }} style={styles.image} />
+      {uri ? (
+        <Image source={{ uri }} style={styles.image} />
       ) : (
         <View style={[styles.image, styles.placeholder]}>
           <FontAwesome name="user" size={90} color="#ccc" />
@@ -55,8 +70,6 @@ export default function Profile() {
     </View>
   );
 }
-
-const AVATAR_SIZE = 200;
 
 const styles = StyleSheet.create({
   container: {
