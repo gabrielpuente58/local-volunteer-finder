@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Button from "../components/Button";
 
 export default function Modal() {
@@ -7,7 +7,8 @@ export default function Modal() {
   return (
     <View style={styles.backdrop}>
       <View style={styles.sheet}>
-        <Text>close</Text>
+        <Button label="Close" onPress={() => router.back()} />
+        <Button label="Close" onPress={() => router.back()} />
         <Button label="Close" onPress={() => router.back()} />
       </View>
     </View>
@@ -26,9 +27,9 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     padding: 16,
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    gap: 12,
+    gap: 30,
   },
 });
