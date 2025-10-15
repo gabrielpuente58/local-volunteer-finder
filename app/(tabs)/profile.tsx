@@ -58,6 +58,7 @@ export default function Profile() {
         onPress={() => router.push("../modal")}
         style={({ pressed }) => [
           {
+            marginTop: 30,
             marginBottom: 10,
             backgroundColor: pressed ? "#005BBB" : "#007AFF",
             padding: 10,
