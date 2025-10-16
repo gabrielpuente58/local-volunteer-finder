@@ -1,15 +1,50 @@
-import { FontAwesome } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import BottomSheetModal from "../../components/BottomSheetModal";
 import Button from "../../components/Button";
-import { useProfileImage } from "../../store/profileImageStore";
+import ImagePickerButtons from "../../components/ImagePickerButtons";
+import ProfileImage from "../../components/ProfileImage";
 
-const AVATAR_SIZE = 200;
+const PROFILE_IMAGE_KEY = "profileImageUri";
 
 export default function Profile() {
-  const router = useRouter();
-  const { uri, loading } = useProfileImage();
+  const [uri, setUri] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    const loadImage = async () => {
+      try {
+        const storedUri = await AsyncStorage.getItem(PROFILE_IMAGE_KEY);
+        if (storedUri) {
+          setUri(storedUri);
+        }
+      } catch (error) {
+        console.error("Error loading profile image:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadImage();
+  }, []);
+
+  useEffect(() => {
+    const saveImage = async () => {
+      try {
+        if (uri === null) {
+          await AsyncStorage.removeItem(PROFILE_IMAGE_KEY);
+        } else {
+          await AsyncStorage.setItem(PROFILE_IMAGE_KEY, uri);
+        }
+      } catch (error) {
+        console.error("Error saving profile image:", error);
+      }
+    };
+    if (!loading) {
+      saveImage();
+    }
+  }, [uri, loading]);
 
   if (loading) {
     return (
@@ -19,43 +54,17 @@ export default function Profile() {
     );
   }
 
-  // ----------------------------------------------------------------
-  // UNUSED BUT MAYBE USEFUL LATER:
-  // const [imageUri, setImageUri] = useState<string | null>(null);
-
-  // const pickFromGallery = async () => {
-  //   const result = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  //     allowsEditing: true,
-  //     aspect: [1, 1],
-  //     quality: 1,
-  //   });
-  //   if (!result.canceled) setImageUri(result.assets[0].uri);
-  // };
-
-  // const takePhoto = async () => {
-  //   const result = await ImagePicker.launchCameraAsync({
-  //     allowsEditing: true,
-  //     aspect: [1, 1],
-  //     quality: 1,
-  //   });
-  //   if (!result.canceled) setImageUri(result.assets[0].uri);
-  // };
-  // ----------------------------------------------------------------
+  const handleImageSelected = (newUri: string) => {
+    setUri(newUri);
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile Picture</Text>
-      {uri ? (
-        <Image source={{ uri }} style={styles.image} />
-      ) : (
-        <View style={[styles.image, styles.placeholder]}>
-          <FontAwesome name="user" size={90} color="#ccc" />
-        </View>
-      )}
+      <ProfileImage uri={uri} />
       <Button
         label="Edit Picture"
-        onPress={() => router.push("../modal")}
+        onPress={() => setModalVisible(true)}
         style={({ pressed }) => [
           {
             marginTop: 30,
@@ -68,6 +77,15 @@ export default function Profile() {
         ]}
         textStyle={{ color: "white", fontWeight: "600", textAlign: "center" }}
       />
+      <BottomSheetModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      >
+        <ImagePickerButtons
+          onImageSelected={handleImageSelected}
+          onClose={() => setModalVisible(false)}
+        />
+      </BottomSheetModal>
     </View>
   );
 }
@@ -83,20 +101,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 10,
     fontWeight: "600",
-  },
-  buttons: {
-    flexDirection: "row",
-    marginTop: 16,
-  },
-  image: {
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
-    borderRadius: AVATAR_SIZE / 2,
-    marginTop: 12,
-  },
-  placeholder: {
-    backgroundColor: "#f2f2f2", // light gray like iOS default
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
