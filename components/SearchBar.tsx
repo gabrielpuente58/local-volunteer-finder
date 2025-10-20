@@ -7,6 +7,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
+import { useTheme } from "../contexts/ThemeContext";
 
 type Props = {
   value: string;
@@ -23,21 +24,32 @@ export default function SearchBar({
   placeholder = "Search",
   containerStyle,
 }: Props) {
+  const { theme } = useTheme();
+
   return (
-    <View style={[styles.container, containerStyle]}>
-      <Feather name="search" size={18} color="#777" />
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: theme.searchBackground,
+          shadowColor: theme.shadow,
+        },
+        containerStyle,
+      ]}
+    >
+      <Feather name="search" size={18} color={theme.searchIcon} />
       <TextInput
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor="#9a9a9a"
-        style={styles.input}
+        placeholderTextColor={theme.searchPlaceholder}
+        style={[styles.input, { color: theme.searchText }]}
         returnKeyType="search"
         onSubmitEditing={onSubmit}
       />
       {value.length > 0 && (
         <Pressable onPress={() => onChangeText("")} hitSlop={10}>
-          <Feather name="x" size={18} color="#777" />
+          <Feather name="x" size={18} color={theme.searchIcon} />
         </Pressable>
       )}
     </View>
@@ -48,14 +60,12 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
     borderRadius: 14,
     paddingHorizontal: 12,
     height: 40,
     minWidth: 250,
     maxWidth: 340,
     marginVertical: 8,
-    shadowColor: "#000",
     shadowOpacity: 0.08,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 3 },
@@ -64,7 +74,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 15,
-    color: "#333",
     marginLeft: 6,
   },
 });

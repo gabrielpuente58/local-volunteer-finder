@@ -1,7 +1,7 @@
 import * as ImagePicker from "expo-image-picker";
 import React from "react";
-import { View } from "react-native";
-import Button from "./Button";
+import { StyleSheet, View } from "react-native";
+import ThemedButton from "./ThemedButton";
 
 type Props = {
   onImageSelected: (uri: string) => void;
@@ -42,7 +42,7 @@ export default function ImagePickerButtons({
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
-      cameraType: ImagePicker.CameraType.front, // Use .front or .back
+      cameraType: ImagePicker.CameraType.front,
     });
     if (!result.canceled) {
       onImageSelected(result.assets[0].uri);
@@ -51,10 +51,23 @@ export default function ImagePickerButtons({
   };
 
   return (
-    <View style={{ gap: 30, alignItems: "center" }}>
-      {onClose && <Button label="Close" onPress={onClose} />}
-      <Button label="Choose from camera roll" onPress={chooseFromLibrary} />
-      <Button label="Take photo" onPress={takePhoto} />
+    <View style={styles.container}>
+      {onClose && (
+        <ThemedButton label="Close" onPress={onClose} variant="secondary" />
+      )}
+      <ThemedButton
+        label="Choose from camera roll"
+        onPress={chooseFromLibrary}
+      />
+      <ThemedButton label="Take photo" onPress={takePhoto} />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    gap: 16,
+    alignItems: "center",
+    width: "100%",
+  },
+});

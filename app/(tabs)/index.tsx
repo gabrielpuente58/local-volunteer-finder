@@ -2,13 +2,18 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import MapView from "react-native-maps";
 import SearchBar from "../../components/SearchBar";
+import { useTheme } from "../../contexts/ThemeContext";
 
 export default function Index() {
   const [query, setQuery] = React.useState("");
+  const { isDark } = useTheme();
 
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} />
+      <MapView
+        style={styles.map}
+        userInterfaceStyle={isDark ? "dark" : "light"}
+      />
       <View style={styles.overlay}>
         <SearchBar
           value={query}

@@ -1,10 +1,23 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import { useTheme } from "../../contexts/ThemeContext";
 
-export default function Profile() {
+export default function Opportunities() {
+  const { theme } = useTheme();
+
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Opportunities screen</Text>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <Text style={{ color: theme.text, fontSize: 18 }}>
+        Opportunities screen
+      </Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

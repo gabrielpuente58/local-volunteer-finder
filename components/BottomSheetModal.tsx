@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { Modal, StyleSheet, View } from "react-native";
+import { useTheme } from "../contexts/ThemeContext";
 
 type Props = {
   visible: boolean;
@@ -12,6 +13,8 @@ export default function BottomSheetModal({
   onClose,
   children,
 }: Props) {
+  const { theme } = useTheme();
+
   return (
     <Modal
       visible={visible}
@@ -19,8 +22,10 @@ export default function BottomSheetModal({
       animationType="slide"
       onRequestClose={onClose}
     >
-      <View style={styles.backdrop}>
-        <View style={styles.sheet}>{children}</View>
+      <View style={[styles.backdrop, { backgroundColor: theme.modalBackdrop }]}>
+        <View style={[styles.sheet, { backgroundColor: theme.card }]}>
+          {children}
+        </View>
       </View>
     </Modal>
   );
@@ -29,12 +34,10 @@ export default function BottomSheetModal({
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.4)",
     justifyContent: "flex-end",
   },
   sheet: {
     height: "40%",
-    backgroundColor: "white",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     padding: 16,

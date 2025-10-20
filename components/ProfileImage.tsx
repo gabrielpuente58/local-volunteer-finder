@@ -1,6 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
 import React from "react";
 import { Image, StyleSheet, View } from "react-native";
+import { useTheme } from "../contexts/ThemeContext";
 
 const AVATAR_SIZE = 200;
 
@@ -10,6 +11,8 @@ type Props = {
 };
 
 export default function ProfileImage({ uri, size = AVATAR_SIZE }: Props) {
+  const { theme } = useTheme();
+
   const dynamicStyles = {
     width: size,
     height: size,
@@ -21,8 +24,19 @@ export default function ProfileImage({ uri, size = AVATAR_SIZE }: Props) {
   }
 
   return (
-    <View style={[styles.image, styles.placeholder, dynamicStyles]}>
-      <FontAwesome name="user" size={size * 0.45} color="#ccc" />
+    <View
+      style={[
+        styles.image,
+        styles.placeholder,
+        dynamicStyles,
+        { backgroundColor: theme.placeholder },
+      ]}
+    >
+      <FontAwesome
+        name="user"
+        size={size * 0.45}
+        color={theme.placeholderIcon}
+      />
     </View>
   );
 }
@@ -32,7 +46,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   placeholder: {
-    backgroundColor: "#f2f2f2",
     alignItems: "center",
     justifyContent: "center",
   },

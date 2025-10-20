@@ -10,7 +10,7 @@ type ButtonProps = {
   textStyle?: StyleProp<TextStyle>;
 };
 
-export default function Button({
+export default function CustomButton({
   label,
   onPress,
   style,

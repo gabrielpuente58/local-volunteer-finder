@@ -2,13 +2,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import BottomSheetModal from "../../components/BottomSheetModal";
-import Button from "../../components/Button";
 import ImagePickerButtons from "../../components/ImagePickerButtons";
-import ProfileImage from "../../components/ProfileImage";
+import ProfileHeader from "../../components/ProfileHeader";
+import ThemedButton from "../../components/ThemedButton";
+import { useTheme } from "../../contexts/ThemeContext";
 
 const PROFILE_IMAGE_KEY = "profileImageUri";
 
 export default function Profile() {
+  const { theme, toggleTheme, isDark } = useTheme();
   const [uri, setUri] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -48,8 +50,8 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <View style={styles.container}>
-        <Text>Loading...</Text>
+      <View style={[styles.container, { backgroundColor: theme.background }]}>
+        <Text style={{ color: theme.text }}>Loading...</Text>
       </View>
     );
   }
@@ -59,24 +61,20 @@ export default function Profile() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Profile Picture</Text>
-      <ProfileImage uri={uri} />
-      <Button
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <ProfileHeader uri={uri} />
+
+      <ThemedButton
         label="Edit Picture"
         onPress={() => setModalVisible(true)}
-        style={({ pressed }) => [
-          {
-            marginTop: 30,
-            marginBottom: 10,
-            backgroundColor: pressed ? "#005BBB" : "#007AFF",
-            padding: 10,
-            borderRadius: 5,
-            transform: [{ scale: pressed ? 0.97 : 1 }],
-          },
-        ]}
-        textStyle={{ color: "white", fontWeight: "600", textAlign: "center" }}
       />
+
+      <ThemedButton
+        label={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        onPress={toggleTheme}
+        variant="secondary"
+      />
+
       <BottomSheetModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
@@ -96,10 +94,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-  },
-  title: {
-    fontSize: 18,
-    marginBottom: 10,
-    fontWeight: "600",
+    gap: 12,
   },
 });
