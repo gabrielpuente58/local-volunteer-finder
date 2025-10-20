@@ -1,18 +1,23 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useTheme } from "../contexts/ThemeContext";
+import { useUser } from "../contexts/UserContext";
 import ProfileImage from "./ProfileImage";
 
 type Props = {
-  uri: string | null;
+  uri?: string | null;
   title?: string;
 };
 
 export default function ProfileHeader({
-  uri,
+  uri: propUri,
   title = "Profile Picture",
 }: Props) {
   const { theme } = useTheme();
+  const { profileImageUri } = useUser();
+
+  // Use prop uri if provided, otherwise use context uri
+  const uri = propUri !== undefined ? propUri : profileImageUri;
 
   return (
     <View style={styles.container}>

@@ -1,52 +1,31 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Feather } from "@expo/vector-icons";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import BottomSheetModal from "../../components/BottomSheetModal";
 import ImagePickerButtons from "../../components/ImagePickerButtons";
 import ProfileHeader from "../../components/ProfileHeader";
 import ThemedButton from "../../components/ThemedButton";
 import { useTheme } from "../../contexts/ThemeContext";
-
-const PROFILE_IMAGE_KEY = "profileImageUri";
+import { useUser } from "../../contexts/UserContext";
 
 export default function Profile() {
   const { theme, toggleTheme, isDark } = useTheme();
-  const [uri, setUri] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const {
+    username,
+    setUsername,
+    profileImageUri,
+    setProfileImageUri,
+    loading,
+  } = useUser();
   const [modalVisible, setModalVisible] = useState(false);
-
-  useEffect(() => {
-    const loadImage = async () => {
-      try {
-        const storedUri = await AsyncStorage.getItem(PROFILE_IMAGE_KEY);
-        if (storedUri) {
-          setUri(storedUri);
-        }
-      } catch (error) {
-        console.error("Error loading profile image:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadImage();
-  }, []);
-
-  useEffect(() => {
-    const saveImage = async () => {
-      try {
-        if (uri === null) {
-          await AsyncStorage.removeItem(PROFILE_IMAGE_KEY);
-        } else {
-          await AsyncStorage.setItem(PROFILE_IMAGE_KEY, uri);
-        }
-      } catch (error) {
-        console.error("Error saving profile image:", error);
-      }
-    };
-    if (!loading) {
-      saveImage();
-    }
-  }, [uri, loading]);
+  const [isEditingUsername, setIsEditingUsername] = useState(false);
+  const [tempUsername, setTempUsername] = useState(username);
 
   if (loading) {
     return (
@@ -57,12 +36,60 @@ export default function Profile() {
   }
 
   const handleImageSelected = (newUri: string) => {
-    setUri(newUri);
+    setProfileImageUri(newUri);
+  };
+
+  const handleSaveUsername = () => {
+    if (tempUsername.trim()) {
+      setUsername(tempUsername);
+    } else {
+      setTempUsername(username);
+    }
+    setIsEditingUsername(false);
+  };
+
+  const handleStartEditing = () => {
+    setTempUsername(username);
+    setIsEditingUsername(true);
   };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <ProfileHeader uri={uri} />
+      <ProfileHeader uri={profileImageUri} />
+
+      {/* Username Display/Edit */}
+      {isEditingUsername ? (
+        <View style={styles.usernameContainer}>
+          <TextInput
+            value={tempUsername}
+            onChangeText={setTempUsername}
+            onBlur={handleSaveUsername}
+            onSubmitEditing={handleSaveUsername}
+            autoFocus
+            returnKeyType="done"
+            style={[
+              styles.usernameInput,
+              {
+                color: theme.text,
+                borderColor: theme.primary,
+              },
+            ]}
+          />
+          <TouchableOpacity onPress={handleSaveUsername}>
+            <Feather name="check" size={24} color={theme.primary} />
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <TouchableOpacity
+          style={styles.usernameContainer}
+          onPress={handleStartEditing}
+        >
+          <Text style={[styles.username, { color: theme.text }]}>
+            {username}
+          </Text>
+          <Feather name="edit-2" size={20} color={theme.textSecondary} />
+        </TouchableOpacity>
+      )}
 
       <ThemedButton
         label="Edit Picture"
@@ -95,5 +122,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
     gap: 12,
+  },
+  usernameContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  username: {
+    fontSize: 24,
+    fontWeight: "700",
+  },
+  usernameInput: {
+    fontSize: 24,
+    fontWeight: "700",
+    borderBottomWidth: 2,
+    paddingBottom: 4,
+    minWidth: 200,
   },
 });
