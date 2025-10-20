@@ -34,7 +34,7 @@ export default function ImagePickerButtons({
   const takePhoto = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
-      alert("Sorry, we need camera permissions to make this work!");
+      alert("We need camera permissions to make this work!");
       return;
     }
 
@@ -42,6 +42,7 @@ export default function ImagePickerButtons({
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
+      cameraType: ImagePicker.CameraType.front, // Use .front or .back
     });
     if (!result.canceled) {
       onImageSelected(result.assets[0].uri);
