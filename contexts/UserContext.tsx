@@ -6,6 +6,8 @@ type UserContextType = {
   setUsername: (name: string) => void;
   profileImageUri: string | null;
   setProfileImageUri: (uri: string | null) => void;
+  isAdmin: boolean;
+  setIsAdmin: (isAdmin: boolean) => void;
   loading: boolean;
 };
 
@@ -13,25 +15,29 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 const USERNAME_KEY = "userName";
 const PROFILE_IMAGE_KEY = "profileImageUri";
+const IS_ADMIN_KEY = "isAdmin";
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [username, setUsernameState] = useState<string>("User");
   const [profileImageUri, setProfileImageUriState] = useState<string | null>(
     null
   );
+  const [isAdmin, setIsAdminState] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
 
   // Load user data on mount
   useEffect(() => {
     const loadUserData = async () => {
       try {
-        const [savedUsername, savedImageUri] = await Promise.all([
+        const [savedUsername, savedImageUri, savedIsAdmin] = await Promise.all([
           AsyncStorage.getItem(USERNAME_KEY),
           AsyncStorage.getItem(PROFILE_IMAGE_KEY),
+          AsyncStorage.getItem(IS_ADMIN_KEY),
         ]);
 
         if (savedUsername) setUsernameState(savedUsername);
         if (savedImageUri) setProfileImageUriState(savedImageUri);
+        if (savedIsAdmin !== null) setIsAdminState(savedIsAdmin === "true");
       } catch (error) {
         console.error("Error loading user data:", error);
       } finally {
@@ -65,6 +71,16 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Save admin status when it changes
+  const setIsAdmin = async (admin: boolean) => {
+    try {
+      await AsyncStorage.setItem(IS_ADMIN_KEY, admin.toString());
+      setIsAdminState(admin);
+    } catch (error) {
+      console.error("Error saving admin status:", error);
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -72,6 +88,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         setUsername,
         profileImageUri,
         setProfileImageUri,
+        isAdmin,
+        setIsAdmin,
         loading,
       }}
     >

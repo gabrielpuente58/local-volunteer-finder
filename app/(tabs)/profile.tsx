@@ -21,6 +21,8 @@ export default function Profile() {
     setUsername,
     profileImageUri,
     setProfileImageUri,
+    isAdmin,
+    setIsAdmin,
     loading,
   } = useUser();
   const [modalVisible, setModalVisible] = useState(false);
@@ -94,6 +96,12 @@ export default function Profile() {
       <ThemedButton
         label="Edit Picture"
         onPress={() => setModalVisible(true)}
+      />
+
+      <ThemedButton
+        label={isAdmin ? "Logout as Admin" : "Login as Admin"}
+        onPress={() => setIsAdmin(!isAdmin)}
+        variant="secondary"
       />
 
       <ThemedButton

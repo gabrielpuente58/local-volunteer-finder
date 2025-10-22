@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 8,
-    minWidth: 200,
     alignItems: "center",
     justifyContent: "center",
     marginVertical: 8,

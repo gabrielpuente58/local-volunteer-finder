@@ -16,7 +16,6 @@ export default function ProfileHeader({
   const { theme } = useTheme();
   const { profileImageUri } = useUser();
 
-  // Use prop uri if provided, otherwise use context uri
   const uri = propUri !== undefined ? propUri : profileImageUri;
 
   return (

@@ -5,9 +5,12 @@ import { Tabs } from "expo-router";
 import { TouchableOpacity } from "react-native";
 import CustomHeader from "../../components/CustomHeader";
 import { useTheme } from "../../contexts/ThemeContext";
+import { useUser } from "../../contexts/UserContext";
+import { openOpportunityModal } from "./opportunities";
 
 export default function TabsLayout() {
   const { theme } = useTheme();
+  const { isAdmin } = useUser();
 
   return (
     <Tabs
@@ -35,15 +38,28 @@ export default function TabsLayout() {
           header: () => (
             <CustomHeader
               rightComponent={
-                <TouchableOpacity onPress={() => console.log("Filter pressed")}>
-                  <Feather name="plus" size={30} color={theme.text} />
-                </TouchableOpacity>
+                isAdmin ? (
+                  <TouchableOpacity onPress={openOpportunityModal}>
+                    <Feather name="plus" size={30} color={theme.text} />
+                  </TouchableOpacity>
+                ) : null
               }
             />
           ),
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="volunteer-activism" size={28} color={color} />
-          ),
+          tabBarIcon: ({ color }) =>
+            isAdmin ? (
+              <MaterialIcons
+                name="admin-panel-settings"
+                size={28}
+                color={color}
+              />
+            ) : (
+              <MaterialIcons
+                name="volunteer-activism"
+                size={28}
+                color={color}
+              />
+            ),
         }}
       />
 
