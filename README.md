@@ -1,50 +1,19 @@
-# Welcome to your Expo app 👋
+# Local Volunteer App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is an app built to find volunteers that are local to users along with that it is also meant for people or organizations who are looking for volunteers whether it be regularly or once every so often.
 
-## Get started
+To help find volunteers it utilized a map that will eventually allow you to search and filter out volunteers based on different things.
 
-1. Install dependencies
+## WireFrame
 
-   ```bash
-   npm install
-   ```
+![Wireframe](wireframe.jpeg "Wireframe")
 
-2. Start the app
+## Human Interface Guidelines Within My App
 
-   ```bash
-   npx expo start
-   ```
+### Light and Dark Mode Implementation
 
-In the output, you'll find options to open the app in a
+This app uses light and dark mode theming. I used different blues dependent on the theme (`#007AFF` for light mode and `#0A84FF` for dark mode). The dark mode implementation follows HIG principles by using true black (`#000000`) for the background, which is optimal for OLED displays and reduces eye strain in low-light environments. Secondary colors such as grays (`#1C1C1E` and `#2C2C2E`) help create visual hierarchy and depth. The colors maintains proper contrast for accessibility, with white text on dark backgrounds and black text on light backgrounds.The theme automatically adapts all UI elements creating a cohesive visual experience across both modes.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### Button Design and Interaction
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+The button components in this app follow HIG standards for touch and visual feedback. Each button implements the Pressable component with appropriate press states, using a scale transformation (`scale: 0.97`) to provide feedback when tapped, which aligns with iOS conventions for interactive elements. The buttons maintain a minimum height that approaches the HIG-recommended 44-point touch target size through vertical padding of 12 points combined with 16-point font size. Press states are visually distinct, with primary buttons darkening to `#005BBB` in light mode and lightening to `#409CFF` in dark mode, providing clear visual confirmation of user interaction. The border radius of 8 points creates modern, approachable UI elements while maintaining visual consistency throughout the application. All buttons use semibold font weight (600) for readability and to emphasize their interactiveness.
