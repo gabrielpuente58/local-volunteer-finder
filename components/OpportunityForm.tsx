@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import { useTheme } from "../contexts/ThemeContext";
+import AddressAutocomplete from "./AddressAutocomplete";
 import ThemedButton from "./ThemedButton";
 
 type FormData = {
@@ -21,6 +22,10 @@ type FormData = {
   peopleNeeded: string;
   dateTime: string;
   imageUri: string | null;
+  coordinates?: {
+    latitude: number;
+    longitude: number;
+  };
 };
 
 type Props = {
@@ -150,21 +155,16 @@ export default function OpportunityForm({
 
       <View style={styles.formGroup}>
         <Text style={[styles.label, { color: theme.text }]}>Location *</Text>
-        <TextInput
-          value={formData.location}
-          onChangeText={(text) =>
-            onFormDataChange({ ...formData, location: text })
-          }
-          placeholder="e.g., 123 Main St, City"
-          placeholderTextColor={theme.textSecondary}
-          style={[
-            styles.input,
-            {
-              backgroundColor: theme.surface,
-              color: theme.text,
-              borderColor: theme.border,
-            },
-          ]}
+        <AddressAutocomplete
+          onPlaceSelected={(address, coordinates) => {
+            onFormDataChange({
+              ...formData,
+              location: address,
+              coordinates: coordinates,
+            });
+          }}
+          placeholder="Type an address..."
+          initialValue={formData.location}
         />
       </View>
 

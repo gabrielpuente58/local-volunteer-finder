@@ -41,13 +41,21 @@ export default function Opportunities() {
   const [modalVisible, setModalVisible] = useState(false);
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    description: string;
+    location: string;
+    peopleNeeded: string;
+    dateTime: string;
+    imageUri: string | null;
+    coordinates?: { latitude: number; longitude: number };
+  }>({
     name: "",
     description: "",
     location: "",
     peopleNeeded: "",
     dateTime: "",
-    imageUri: null as string | null,
+    imageUri: null,
   });
 
   const openModal = () => setModalVisible(true);
@@ -144,6 +152,8 @@ export default function Opportunities() {
           <ScrollView
             style={{ flex: 1 }}
             contentContainerStyle={styles.formContainer}
+            nestedScrollEnabled={true}
+            keyboardShouldPersistTaps="handled"
           >
             <OpportunityForm
               formData={formData}
