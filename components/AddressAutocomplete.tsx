@@ -9,7 +9,6 @@ LogBox.ignoreLogs([
   "VirtualizedLists should never be nested inside plain ScrollViews",
 ]);
 
-// Your Google Places API key from environment variables
 const GOOGLE_PLACES_API_KEY =
   process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY || "";
 
@@ -18,12 +17,14 @@ type Props = {
     address: string,
     coordinates: { latitude: number; longitude: number }
   ) => void;
+  onTextChange?: (text: string) => void;
   placeholder?: string;
   initialValue?: string;
 };
 
 export default function AddressAutocomplete({
   onPlaceSelected,
+  onTextChange,
   placeholder = "Search for location...",
   initialValue = "",
 }: Props) {
@@ -36,14 +37,12 @@ export default function AddressAutocomplete({
       listViewDisplayed="auto"
       suppressDefaultStyles={false}
       onPress={(data, details = null) => {
-        console.log("Place selected:", data.description);
         if (details && details.geometry) {
           const address = data.description;
           const coordinates = {
             latitude: details.geometry.location.lat,
             longitude: details.geometry.location.lng,
           };
-          console.log("Coordinates:", coordinates);
           onPlaceSelected(address, coordinates);
         }
       }}
@@ -120,6 +119,11 @@ export default function AddressAutocomplete({
         placeholderTextColor: theme.textSecondary,
         autoCorrect: false,
         autoCapitalize: "none",
+        onChangeText: (text) => {
+          if (onTextChange) {
+            onTextChange(text);
+          }
+        },
       }}
     />
   );

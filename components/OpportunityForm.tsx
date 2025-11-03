@@ -163,6 +163,14 @@ export default function OpportunityForm({
               coordinates: coordinates,
             });
           }}
+          onTextChange={(text) => {
+            // Update location text but clear coordinates since it's manual entry
+            onFormDataChange({
+              ...formData,
+              location: text,
+              coordinates: undefined, // Clear coordinates for manual entry
+            });
+          }}
           placeholder="Type an address..."
           initialValue={formData.location}
         />

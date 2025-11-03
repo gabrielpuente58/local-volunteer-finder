@@ -12,6 +12,7 @@ import OpportunityCard from "../../components/OpportunityCard";
 import OpportunityForm from "../../components/OpportunityForm";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useUser } from "../../contexts/UserContext";
+import { geocodeAddress } from "../../utils/geocoding";
 
 const OPPORTUNITIES_KEY = "volunteer_opportunities";
 
@@ -33,6 +34,7 @@ type Opportunity = {
   dateTime: string;
   imageUri: string | null;
   volunteersSignedUp: number;
+  coordinates?: { latitude: number; longitude: number };
 };
 
 export default function Opportunities() {
@@ -102,7 +104,17 @@ export default function Opportunities() {
     };
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    // If we have a location but no coordinates, geocode it
+    let coordinates = formData.coordinates;
+
+    if (formData.location && !coordinates) {
+      const geocodedCoords = await geocodeAddress(formData.location);
+      if (geocodedCoords) {
+        coordinates = geocodedCoords;
+      }
+    }
+
     // Create new opportunity
     const newOpportunity: Opportunity = {
       id: Date.now().toString(),
@@ -113,6 +125,7 @@ export default function Opportunities() {
       dateTime: formData.dateTime,
       imageUri: formData.imageUri,
       volunteersSignedUp: 0,
+      coordinates: coordinates,
     };
 
     // Add to list
