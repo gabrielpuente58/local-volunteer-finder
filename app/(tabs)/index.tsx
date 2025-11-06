@@ -1,31 +1,18 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
 import { useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import MapView, { Callout, Marker, Region } from "react-native-maps";
+import LoadingIndicator from "../../components/LoadingIndicator";
 import SearchBar from "../../components/SearchBar";
 import { useTheme } from "../../contexts/ThemeContext";
-import { geocodeAddress } from "../../utils/geocoding";
-
-const OPPORTUNITIES_KEY = "volunteer_opportunities";
-
-type Opportunity = {
-  id: string;
-  name: string;
-  description: string;
-  location: string;
-  peopleNeeded: string;
-  dateTime: string;
-  imageUri: string | null;
-  volunteersSignedUp: number;
-  coordinates?: { latitude: number; longitude: number };
-};
+import { useOpportunities } from "../../hooks/useOpportunities";
 
 export default function Index() {
   const [query, setQuery] = React.useState("");
   const { isDark, theme } = useTheme();
-  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const { opportunitiesWithCoords, loading, loadOpportunities } =
+    useOpportunities();
   const [region, setRegion] = useState<Region>({
     latitude: 37.78825, // Default to San Francisco
     longitude: -122.4324,
@@ -33,56 +20,9 @@ export default function Index() {
     longitudeDelta: 0.0421,
   });
 
-  // Load opportunities from AsyncStorage
-  const loadOpportunities = useCallback(async () => {
-    try {
-      const stored = await AsyncStorage.getItem(OPPORTUNITIES_KEY);
-      if (stored) {
-        const allOpportunities = JSON.parse(stored);
-
-        // Geocode opportunities that don't have coordinates
-        let updated = false;
-        const updatedOpportunities = await Promise.all(
-          allOpportunities.map(async (opp: Opportunity) => {
-            if (!opp.coordinates && opp.location) {
-              const coords = await geocodeAddress(opp.location);
-              if (coords) {
-                updated = true;
-                return { ...opp, coordinates: coords };
-              }
-            }
-            return opp;
-          })
-        );
-
-        // Save back to storage if we geocoded any
-        if (updated) {
-          await AsyncStorage.setItem(
-            OPPORTUNITIES_KEY,
-            JSON.stringify(updatedOpportunities)
-          );
-        }
-
-        // Filter to only include opportunities with coordinates
-        const opportunitiesWithCoords = updatedOpportunities.filter(
-          (opp: Opportunity) => opp.coordinates
-        );
-        setOpportunities(opportunitiesWithCoords);
-      }
-    } catch (error) {
-      console.error("Error loading opportunities:", error);
-    }
-  }, []);
-
-  // Load opportunities on mount and when screen comes into focus
-  useEffect(() => {
-    loadOpportunities();
-  }, [loadOpportunities]);
-
-  // Reload opportunities every time the map tab is focused
   useFocusEffect(
     useCallback(() => {
-      loadOpportunities();
+      loadOpportunities(true);
     }, [loadOpportunities])
   );
 
@@ -113,6 +53,10 @@ export default function Index() {
     getLocation();
   }, []);
 
+  if (loading) {
+    return <LoadingIndicator message="Loading opportunities..." />;
+  }
+
   return (
     <View style={styles.container}>
       <MapView
@@ -124,7 +68,7 @@ export default function Index() {
         showsMyLocationButton={true}
       >
         {/* Display opportunity markers */}
-        {opportunities.map((opportunity) => (
+        {opportunitiesWithCoords.map((opportunity) => (
           <Marker
             key={opportunity.id}
             coordinate={{
@@ -165,7 +109,7 @@ const styles = StyleSheet.create({
   map: { width: "100%", height: "100%" },
   overlay: {
     position: "absolute",
-    top: 60, // adjust for safe area / iPhone notch
+    top: 60,
     width: "100%",
     alignItems: "center",
   },

@@ -17,3 +17,7 @@ This app uses light and dark mode theming. I used different blues dependent on t
 ### Button Design and Interaction
 
 The button components in this app follow HIG standards for touch and visual feedback. Each button implements the Pressable component with appropriate press states, using a scale transformation (`scale: 0.97`) to provide feedback when tapped, which aligns with iOS conventions for interactive elements. The buttons maintain a minimum height that approaches the HIG-recommended 44-point touch target size through vertical padding of 12 points combined with 16-point font size. Press states are visually distinct, with primary buttons darkening to `#005BBB` in light mode and lightening to `#409CFF` in dark mode, providing clear visual confirmation of user interaction. The border radius of 8 points creates modern, approachable UI elements while maintaining visual consistency throughout the application. All buttons use semibold font weight (600) for readability and to emphasize their interactiveness.
+
+### Loading States and Progress Indicators
+
+The app implements loading states following Apple's Human Interface Guidelines. A custom `LoadingIndicator` component is used throughout the app. For example, when you move to the map and opportunities page. The loading indicator lasts 800ms which is within the bounds suggested by apple. Finially the loading page also adjusts with the light and dark mode.
