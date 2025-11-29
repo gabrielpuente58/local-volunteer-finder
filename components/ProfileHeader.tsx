@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../contexts/ThemeContext";
 import { useUser } from "../contexts/UserContext";
 import ProfileImage from "./ProfileImage";
@@ -22,7 +22,6 @@ export default function ProfileHeader({
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, { color: theme.text }]}>{title}</Text>
       {onPress ? (
         <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
           <ProfileImage uri={uri} />
@@ -37,10 +36,5 @@ export default function ProfileHeader({
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "600",
-    marginBottom: 16,
   },
 });

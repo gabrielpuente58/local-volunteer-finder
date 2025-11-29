@@ -11,6 +11,7 @@ import {
 import AddressAutocomplete from "../../components/AddressAutocomplete";
 import BottomSheetModal from "../../components/BottomSheetModal";
 import ImagePickerButtons from "../../components/ImagePickerButtons";
+import InterestPickerModal from "../../components/InterestPickerModal";
 import ProfileHeader from "../../components/ProfileHeader";
 import SettingsModal from "../../components/SettingsModal";
 import ThemedButton from "../../components/ThemedButton";
@@ -38,6 +39,7 @@ export default function Profile() {
   } = useUser();
   const [modalVisible, setModalVisible] = useState(false);
   const [settingsVisible, setSettingsVisible] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [tempUsername, setTempUsername] = useState(username);
   const [bio, setBio] = useState("I love volunteering in my community!");
@@ -46,6 +48,14 @@ export default function Profile() {
   const [location, setLocation] = useState("San Francisco, CA");
   const [isEditingLocation, setIsEditingLocation] = useState(false);
   const [memberSince] = useState("January 2024");
+  const [interests, setInterests] = useState<string[]>([
+    "Environment",
+    "Education",
+    "Community",
+    "Health",
+    "Animals",
+  ]);
+  const [interestPickerVisible, setInterestPickerVisible] = useState(false);
 
   useEffect(() => {
     settingsModalTrigger = () => setSettingsVisible(true);
@@ -107,6 +117,10 @@ export default function Profile() {
     setIsEditingLocation(true);
   };
 
+  const handleSaveInterests = (newInterests: string[]) => {
+    setInterests(newInterests);
+  };
+
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: theme.background }]}
@@ -116,7 +130,7 @@ export default function Profile() {
     >
       <ProfileHeader
         uri={profileImageUri}
-        onPress={() => setModalVisible(true)}
+        onPress={isEditMode ? () => setModalVisible(true) : undefined}
       />
 
       {/* Username Display/Edit */}
@@ -159,7 +173,7 @@ export default function Profile() {
           <Text style={[styles.sectionTitle, { color: theme.text }]}>
             About
           </Text>
-          {!isEditingBio && (
+          {isEditMode && !isEditingBio && (
             <TouchableOpacity onPress={handleStartEditingBio}>
               <Feather name="edit-2" size={18} color={theme.textSecondary} />
             </TouchableOpacity>
@@ -230,13 +244,16 @@ export default function Profile() {
           <>
             <TouchableOpacity
               style={styles.infoRow}
-              onPress={handleStartEditingLocation}
+              onPress={isEditMode ? handleStartEditingLocation : undefined}
+              disabled={!isEditMode}
             >
               <Feather name="map-pin" size={20} color={theme.textSecondary} />
               <Text style={[styles.infoText, { color: theme.textSecondary }]}>
                 {location}
               </Text>
-              <Feather name="edit-2" size={16} color={theme.textSecondary} />
+              {isEditMode && (
+                <Feather name="edit-2" size={16} color={theme.textSecondary} />
+              )}
             </TouchableOpacity>
             <View style={styles.infoRow}>
               <Feather name="calendar" size={20} color={theme.textSecondary} />
@@ -292,12 +309,19 @@ export default function Profile() {
 
       {/* Interests Section */}
       <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>
-          Interests
-        </Text>
-        <View style={styles.tagsContainer}>
-          {["Environment", "Education", "Community", "Health", "Animals"].map(
-            (interest) => (
+        <View style={styles.sectionHeader}>
+          <Text style={[styles.sectionTitle, { color: theme.text }]}>
+            Interests
+          </Text>
+          {isEditMode && (
+            <TouchableOpacity onPress={() => setInterestPickerVisible(true)}>
+              <Feather name="edit-2" size={18} color={theme.textSecondary} />
+            </TouchableOpacity>
+          )}
+        </View>
+        {interests.length > 0 ? (
+          <View style={styles.tagsContainer}>
+            {interests.map((interest) => (
               <View
                 key={interest}
                 style={[
@@ -309,9 +333,13 @@ export default function Profile() {
                   {interest}
                 </Text>
               </View>
-            )
-          )}
-        </View>
+            ))}
+          </View>
+        ) : (
+          <Text style={[styles.bioText, { color: theme.textSecondary }]}>
+            No interests selected. {isEditMode && "Tap edit to add some!"}
+          </Text>
+        )}
       </View>
 
       {/* Achievements Section */}
@@ -371,6 +399,22 @@ export default function Profile() {
         </View>
       </View>
 
+      {/* Edit Profile Button */}
+      <View style={styles.section}>
+        <ThemedButton
+          label={isEditMode ? "Done Editing" : "Edit Profile"}
+          onPress={() => {
+            if (isEditMode) {
+              // Exit edit mode and save/cancel any active edits
+              setIsEditingBio(false);
+              setIsEditingLocation(false);
+            }
+            setIsEditMode(!isEditMode);
+          }}
+          variant={isEditMode ? "primary" : "secondary"}
+        />
+      </View>
+
       {/* Admin Toggle */}
       <View style={styles.section}>
         <ThemedButton
@@ -393,6 +437,13 @@ export default function Profile() {
       <SettingsModal
         visible={settingsVisible}
         onClose={() => setSettingsVisible(false)}
+      />
+
+      <InterestPickerModal
+        visible={interestPickerVisible}
+        onClose={() => setInterestPickerVisible(false)}
+        selectedInterests={interests}
+        onSave={handleSaveInterests}
       />
     </ScrollView>
   );
