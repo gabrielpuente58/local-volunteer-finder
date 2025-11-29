@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
-import FontAwesome from "@expo/vector-icons/FontAwesome5";
+// import FontAwesome from "@expo/vector-icons/FontAwesome5";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Tabs } from "expo-router";
 import { TouchableOpacity } from "react-native";
@@ -66,10 +67,10 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: "Map",
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="home" color={color} />
+            <FontAwesome size={28} name="map-o" color={color} />
           ),
         }}
       />

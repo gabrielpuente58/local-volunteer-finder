@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../contexts/ThemeContext";
 import { useUser } from "../contexts/UserContext";
 import ProfileImage from "./ProfileImage";
@@ -7,11 +7,13 @@ import ProfileImage from "./ProfileImage";
 type Props = {
   uri?: string | null;
   title?: string;
+  onPress?: () => void;
 };
 
 export default function ProfileHeader({
   uri: propUri,
   title = "Profile Picture",
+  onPress,
 }: Props) {
   const { theme } = useTheme();
   const { profileImageUri } = useUser();
@@ -21,7 +23,13 @@ export default function ProfileHeader({
   return (
     <View style={styles.container}>
       <Text style={[styles.title, { color: theme.text }]}>{title}</Text>
-      <ProfileImage uri={uri} />
+      {onPress ? (
+        <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+          <ProfileImage uri={uri} />
+        </TouchableOpacity>
+      ) : (
+        <ProfileImage uri={uri} />
+      )}
     </View>
   );
 }
