@@ -1,33 +1,37 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../contexts/ThemeContext";
+import { Opportunity } from "../hooks/useOpportunities";
 
 type Props = {
-  name: string;
-  description: string;
-  location: string;
-  peopleNeeded: string;
-  dateTime: string;
-  imageUri: string | null;
-  volunteersSignedUp: number;
+  opportunity: Opportunity;
   isAdmin?: boolean;
+  onPress?: () => void;
 };
 
 export default function OpportunityCard({
-  name,
-  description,
-  location,
-  peopleNeeded,
-  dateTime,
-  imageUri,
-  volunteersSignedUp,
+  opportunity,
   isAdmin = false,
+  onPress,
 }: Props) {
   const { theme } = useTheme();
+  const {
+    name,
+    description,
+    location,
+    peopleNeeded,
+    dateTime,
+    imageUri,
+    volunteersSignedUp,
+  } = opportunity;
 
   return (
-    <View style={[styles.card, { backgroundColor: theme.card }]}>
+    <TouchableOpacity
+      style={[styles.card, { backgroundColor: theme.card }]}
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
       {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
       <Text style={[styles.title, { color: theme.text }]}>{name}</Text>
       <Text style={[styles.description, { color: theme.textSecondary }]}>
@@ -72,7 +76,7 @@ export default function OpportunityCard({
           </>
         )}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

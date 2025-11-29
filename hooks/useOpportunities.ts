@@ -14,6 +14,7 @@ export type Opportunity = {
   imageUri: string | null;
   volunteersSignedUp: number;
   coordinates?: { latitude: number; longitude: number };
+  categories?: string[];
 };
 
 export function useOpportunities() {
@@ -25,6 +26,7 @@ export function useOpportunities() {
   // Load opportunities from AsyncStorage
   const loadOpportunities = useCallback(async (isRefresh = false) => {
     try {
+      console.log("Loading opportunities, isRefresh:", isRefresh);
       if (isRefresh) {
         setRefreshing(true);
       } else {
@@ -125,8 +127,13 @@ export function useOpportunities() {
   // Update an opportunity
   const updateOpportunity = useCallback(
     async (id: string, updates: Partial<Opportunity>) => {
+      console.log("Updating opportunity:", id, "with:", updates);
       const newOpportunities = opportunities.map((opp) =>
         opp.id === id ? { ...opp, ...updates } : opp
+      );
+      console.log(
+        "New opportunities array:",
+        newOpportunities.find((o) => o.id === id)
       );
       await saveOpportunities(newOpportunities);
     },

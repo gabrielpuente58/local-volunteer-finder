@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import {
   ScrollView,
@@ -427,7 +427,14 @@ export default function Profile() {
                 { backgroundColor: theme.card, borderColor: theme.border },
               ]}
             >
-              <Text style={styles.achievementIcon}>🏆</Text>
+              <View
+                style={[
+                  styles.achievementIconContainer,
+                  { backgroundColor: theme.primary + "20" },
+                ]}
+              >
+                <Ionicons name="trophy" size={32} color={theme.primary} />
+              </View>
               <Text style={[styles.achievementTitle, { color: theme.text }]}>
                 First Timer
               </Text>
@@ -443,7 +450,14 @@ export default function Profile() {
                 { backgroundColor: theme.card, borderColor: theme.border },
               ]}
             >
-              <Text style={styles.achievementIcon}>⭐</Text>
+              <View
+                style={[
+                  styles.achievementIconContainer,
+                  { backgroundColor: theme.primary + "20" },
+                ]}
+              >
+                <Ionicons name="star" size={32} color={theme.primary} />
+              </View>
               <Text style={[styles.achievementTitle, { color: theme.text }]}>
                 Rising Star
               </Text>
@@ -459,7 +473,18 @@ export default function Profile() {
                 { backgroundColor: theme.card, borderColor: theme.border },
               ]}
             >
-              <Text style={styles.achievementIcon}>🌟</Text>
+              <View
+                style={[
+                  styles.achievementIconContainer,
+                  { backgroundColor: theme.primary + "20" },
+                ]}
+              >
+                <MaterialCommunityIcons
+                  name="shield-star"
+                  size={32}
+                  color={theme.primary}
+                />
+              </View>
               <Text style={[styles.achievementTitle, { color: theme.text }]}>
                 Community Hero
               </Text>
@@ -473,29 +498,31 @@ export default function Profile() {
         </View>
       )}
 
-      {/* Edit Profile Button */}
+      {/* Edit Profile and Admin Toggle Buttons */}
       <View style={styles.section}>
-        <ThemedButton
-          label={isEditMode ? "Done Editing" : "Edit Profile"}
-          onPress={() => {
-            if (isEditMode) {
-              // Exit edit mode and save/cancel any active edits
-              setIsEditingBio(false);
-              setIsEditingLocation(false);
-            }
-            setIsEditMode(!isEditMode);
-          }}
-          variant={isEditMode ? "primary" : "secondary"}
-        />
-      </View>
-
-      {/* Admin Toggle */}
-      <View style={styles.section}>
-        <ThemedButton
-          label={isAdmin ? "Logout as Admin" : "Login as Admin"}
-          onPress={() => setIsAdmin(!isAdmin)}
-          variant="secondary"
-        />
+        <View style={styles.buttonRow}>
+          <View style={styles.buttonHalf}>
+            <ThemedButton
+              label={isEditMode ? "Done Editing" : "Edit Profile"}
+              onPress={() => {
+                if (isEditMode) {
+                  // Exit edit mode and save/cancel any active edits
+                  setIsEditingBio(false);
+                  setIsEditingLocation(false);
+                }
+                setIsEditMode(!isEditMode);
+              }}
+              variant={isEditMode ? "primary" : "secondary"}
+            />
+          </View>
+          <View style={styles.buttonHalf}>
+            <ThemedButton
+              label={isAdmin ? "Logout as Admin" : "Login as Admin"}
+              onPress={() => setIsAdmin(!isAdmin)}
+              variant="secondary"
+            />
+          </View>
+        </View>
       </View>
 
       <BottomSheetModal
@@ -554,6 +581,13 @@ const styles = StyleSheet.create({
   section: {
     width: "100%",
     gap: 12,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  buttonHalf: {
+    flex: 1,
   },
   sectionHeader: {
     flexDirection: "row",
@@ -645,6 +679,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
+  },
+  achievementIconContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: "center",
+    justifyContent: "center",
   },
   achievementIcon: {
     fontSize: 32,

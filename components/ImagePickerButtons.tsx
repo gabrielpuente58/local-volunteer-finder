@@ -1,7 +1,8 @@
+import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import ThemedButton from "./ThemedButton";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTheme } from "../contexts/ThemeContext";
 
 type Props = {
   onImageSelected: (uri: string) => void;
@@ -12,6 +13,8 @@ export default function ImagePickerButtons({
   onImageSelected,
   onClose,
 }: Props) {
+  const { theme } = useTheme();
+
   const chooseFromLibrary = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -52,22 +55,58 @@ export default function ImagePickerButtons({
 
   return (
     <View style={styles.container}>
-      {onClose && (
-        <ThemedButton label="Close" onPress={onClose} variant="secondary" />
-      )}
-      <ThemedButton
-        label="Choose from camera roll"
-        onPress={chooseFromLibrary}
-      />
-      <ThemedButton label="Take photo" onPress={takePhoto} />
+      <View style={styles.buttonRow}>
+        <TouchableOpacity
+          style={[
+            styles.button,
+            { backgroundColor: theme.card, borderColor: theme.border },
+          ]}
+          onPress={chooseFromLibrary}
+        >
+          <Feather name="image" size={24} color={theme.textSecondary} />
+          <Text style={[styles.buttonText, { color: theme.textSecondary }]}>
+            Choose Photo
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.button,
+            { backgroundColor: theme.card, borderColor: theme.border },
+          ]}
+          onPress={takePhoto}
+        >
+          <Feather name="camera" size={24} color={theme.textSecondary} />
+          <Text style={[styles.buttonText, { color: theme.textSecondary }]}>
+            Take Photo
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    gap: 16,
-    alignItems: "center",
     width: "100%",
+  },
+  buttonRow: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  button: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  buttonText: {
+    fontSize: 15,
+    fontWeight: "500",
   },
 });

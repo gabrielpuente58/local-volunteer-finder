@@ -17,7 +17,7 @@ export default function CustomHeader({ rightComponent }: Props) {
       style={[
         styles.container,
         {
-          backgroundColor: theme.card,
+          backgroundColor: theme.background,
           borderBottomColor: theme.border,
         },
       ]}

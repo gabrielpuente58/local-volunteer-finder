@@ -1,23 +1,61 @@
-# Local Volunteer App
+# Local Volunteer Finder
 
-This is an app built to find volunteers that are local to users along with that it is also meant for people or organizations who are looking for volunteers whether it be regularly or once every so often.
+A React Native mobile application that connects volunteers with local community service opportunities. This app serves two user types: regular users who want to find and sign up for volunteer opportunities, and administrators who can create and manage volunteer events.
 
-To help find volunteers it utilized a map that will eventually allow you to search and filter out volunteers based on different things.
+## Application Description
 
-## WireFrame
+Local Volunteer Finder is a comprehensive volunteer management platform built with React Native and Expo. The app utilizes Google Maps integration to display volunteer opportunities on an interactive map, allowing users to discover events near them. Users can browse opportunities in both map and list views, filter by distance and categories, and track their volunteer commitments. Administrators have additional capabilities to create, edit, and delete volunteer opportunities, as well as manage volunteer sign-ups.
+
+### Key Features
+
+**For Regular Users:**
+
+- Interactive map view showing volunteer opportunities with custom markers
+- List view with detailed opportunity cards
+- Filter opportunities by distance and up to 20 interest categories (Environment, Education, Community, Health, Animals, Arts & Culture, etc.)
+- Sign up for or leave volunteer opportunities
+- Track personal volunteer events in a dedicated "My Events" page
+- Customizable user profile with bio, location, interests, and achievements
+- Dark mode support
+
+**For Administrators:**
+
+- All regular user features plus administrative capabilities
+- Create volunteer opportunities with full details (name, description, location, date/time, volunteer count, images, categories)
+- Edit existing opportunities including updating categories and information
+- Delete volunteer opportunities with confirmation
+- Manage volunteers page showing all opportunities with volunteer counts
+- View unfiltered opportunity list (filters only apply to regular users)
+
+**Technical Features:**
+
+- Google Places API integration for location autocomplete and geocoding
+- AsyncStorage for local data persistence
+- React Context for state management (User context, Theme context)
+- Custom hooks for opportunities management
+- Image upload via device camera or photo library
+- Native date/time picker integration
+- Real-time volunteer count tracking
+- Haversine formula for distance calculations
+
+## Wireframes
 
 ![Wireframe](wireframe.jpeg "Wireframe")
 
-## Human Interface Guidelines Within My App
+## Screenshots
+
+[Add screenshots of your app here showing key features like the map view, list view, profile page, create opportunity modal, etc.]
+
+## Human Interface Guidelines Implementation
 
 ### Light and Dark Mode Implementation
 
-This app uses light and dark mode theming. I used different blues dependent on the theme (`#007AFF` for light mode and `#0A84FF` for dark mode). The dark mode implementation follows HIG principles by using true black (`#000000`) for the background, which is optimal for OLED displays and reduces eye strain in low-light environments. Secondary colors such as grays (`#1C1C1E` and `#2C2C2E`) help create visual hierarchy and depth. The colors maintains proper contrast for accessibility, with white text on dark backgrounds and black text on light backgrounds.The theme automatically adapts all UI elements creating a cohesive visual experience across both modes.
+The app implements comprehensive light and dark mode theming using iOS standard blues (`#007AFF` for light, `#0A84FF` for dark) with true black backgrounds (`#000000`) in dark mode for OLED optimization. All UI components automatically adapt to the selected theme with proper WCAG AA contrast ratios, and the preference persists using AsyncStorage across app sessions.
 
-### Button Design and Interaction
+### Touch Targets and Interactive Feedback
 
-The button components in this app follow HIG standards for touch and visual feedback. Each button implements the Pressable component with appropriate press states, using a scale transformation (`scale: 0.97`) to provide feedback when tapped, which aligns with iOS conventions for interactive elements. The buttons maintain a minimum height that approaches the HIG-recommended 44-point touch target size through vertical padding of 12 points combined with 16-point font size. Press states are visually distinct, with primary buttons darkening to `#005BBB` in light mode and lightening to `#409CFF` in dark mode, providing clear visual confirmation of user interaction. The border radius of 8 points creates modern, approachable UI elements while maintaining visual consistency throughout the application. All buttons use semibold font weight (600) for readability and to emphasize their interactiveness.
+All interactive elements maintain the HIG-recommended minimum 44-point touch target size through appropriate padding, such as the 85px height bottom navigation and properly sized buttons. Interactive feedback uses scale transformations (`scale: 0.97`) and color changes on press, with buttons darkening to `#005BBB` in light mode and lightening to `#409CFF` in dark mode for clear visual confirmation.
 
-### Loading States and Progress Indicators
+### Loading States, Progress Indicators, and Navigation
 
-The app implements loading states following Apple's Human Interface Guidelines. A custom `LoadingIndicator` component is used throughout the app. For example, when you move to the map and opportunities page. The loading indicator lasts 800ms which is within the bounds suggested by apple. Finially the loading page also adjusts with the light and dark mode.
+The app uses a custom `LoadingIndicator` component with iOS activity indicators that adapt to the current theme, with an 800ms minimum loading time to prevent jarring flickers. Navigation follows iOS patterns with a bottom tab bar featuring clear icons and labels, enhanced with elevation and shadows for a floating effect, plus conditional navigation showing different tabs based on user roles (administrators see Manage instead of My Events).
