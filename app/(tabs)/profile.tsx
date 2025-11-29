@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -11,9 +11,18 @@ import {
 import BottomSheetModal from "../../components/BottomSheetModal";
 import ImagePickerButtons from "../../components/ImagePickerButtons";
 import ProfileHeader from "../../components/ProfileHeader";
+import SettingsModal from "../../components/SettingsModal";
 import ThemedButton from "../../components/ThemedButton";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useUser } from "../../contexts/UserContext";
+
+let settingsModalTrigger: (() => void) | null = null;
+
+export function openSettingsModal() {
+  if (settingsModalTrigger) {
+    settingsModalTrigger();
+  }
+}
 
 export default function Profile() {
   const { theme, toggleTheme, isDark } = useTheme();
@@ -27,11 +36,21 @@ export default function Profile() {
     loading,
   } = useUser();
   const [modalVisible, setModalVisible] = useState(false);
+  const [settingsVisible, setSettingsVisible] = useState(false);
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [tempUsername, setTempUsername] = useState(username);
   const [bio, setBio] = useState("I love volunteering in my community!");
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [tempBio, setTempBio] = useState(bio);
+  const [location, setLocation] = useState("San Francisco, CA");
+  const [memberSince] = useState("January 2024");
+
+  useEffect(() => {
+    settingsModalTrigger = () => setSettingsVisible(true);
+    return () => {
+      settingsModalTrigger = null;
+    };
+  }, []);
 
   if (loading) {
     return (
@@ -170,6 +189,22 @@ export default function Profile() {
         )}
       </View>
 
+      {/* Location Section */}
+      <View style={styles.section}>
+        <View style={styles.infoRow}>
+          <Feather name="map-pin" size={20} color={theme.textSecondary} />
+          <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+            {location}
+          </Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Feather name="calendar" size={20} color={theme.textSecondary} />
+          <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+            Member since {memberSince}
+          </Text>
+        </View>
+      </View>
+
       {/* Stats Section */}
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: theme.text }]}>
@@ -212,23 +247,94 @@ export default function Profile() {
         </View>
       </View>
 
-      {/* Settings Section */}
+      {/* Interests Section */}
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: theme.text }]}>
-          Settings
+          Interests
         </Text>
-        <View style={styles.settingsContainer}>
-          <ThemedButton
-            label={isAdmin ? "Logout as Admin" : "Login as Admin"}
-            onPress={() => setIsAdmin(!isAdmin)}
-            variant="secondary"
-          />
-          <ThemedButton
-            label={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-            onPress={toggleTheme}
-            variant="secondary"
-          />
+        <View style={styles.tagsContainer}>
+          {["Environment", "Education", "Community", "Health", "Animals"].map(
+            (interest) => (
+              <View
+                key={interest}
+                style={[
+                  styles.tag,
+                  { backgroundColor: theme.card, borderColor: theme.border },
+                ]}
+              >
+                <Text style={[styles.tagText, { color: theme.text }]}>
+                  {interest}
+                </Text>
+              </View>
+            )
+          )}
         </View>
+      </View>
+
+      {/* Achievements Section */}
+      <View style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>
+          Achievements
+        </Text>
+        <View style={styles.achievementsContainer}>
+          <View
+            style={[
+              styles.achievementCard,
+              { backgroundColor: theme.card, borderColor: theme.border },
+            ]}
+          >
+            <Text style={styles.achievementIcon}>🏆</Text>
+            <Text style={[styles.achievementTitle, { color: theme.text }]}>
+              First Timer
+            </Text>
+            <Text
+              style={[styles.achievementDesc, { color: theme.textSecondary }]}
+            >
+              Completed your first opportunity
+            </Text>
+          </View>
+          <View
+            style={[
+              styles.achievementCard,
+              { backgroundColor: theme.card, borderColor: theme.border },
+            ]}
+          >
+            <Text style={styles.achievementIcon}>⭐</Text>
+            <Text style={[styles.achievementTitle, { color: theme.text }]}>
+              Rising Star
+            </Text>
+            <Text
+              style={[styles.achievementDesc, { color: theme.textSecondary }]}
+            >
+              Volunteered 10 times
+            </Text>
+          </View>
+          <View
+            style={[
+              styles.achievementCard,
+              { backgroundColor: theme.card, borderColor: theme.border },
+            ]}
+          >
+            <Text style={styles.achievementIcon}>🌟</Text>
+            <Text style={[styles.achievementTitle, { color: theme.text }]}>
+              Community Hero
+            </Text>
+            <Text
+              style={[styles.achievementDesc, { color: theme.textSecondary }]}
+            >
+              Reached 50 volunteer hours
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Admin Toggle */}
+      <View style={styles.section}>
+        <ThemedButton
+          label={isAdmin ? "Logout as Admin" : "Login as Admin"}
+          onPress={() => setIsAdmin(!isAdmin)}
+          variant="secondary"
+        />
       </View>
 
       <BottomSheetModal
@@ -240,6 +346,11 @@ export default function Profile() {
           onClose={() => setModalVisible(false)}
         />
       </BottomSheetModal>
+
+      <SettingsModal
+        visible={settingsVisible}
+        onClose={() => setSettingsVisible(false)}
+      />
     </ScrollView>
   );
 }
@@ -326,7 +437,51 @@ const styles = StyleSheet.create({
     marginTop: 4,
     textAlign: "center",
   },
-  settingsContainer: {
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 8,
+  },
+  infoText: {
+    fontSize: 15,
+  },
+  tagsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  tag: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  tagText: {
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  achievementsContainer: {
     gap: 12,
+  },
+  achievementCard: {
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  achievementIcon: {
+    fontSize: 32,
+  },
+  achievementTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    flex: 1,
+  },
+  achievementDesc: {
+    fontSize: 13,
+    flex: 1,
   },
 });

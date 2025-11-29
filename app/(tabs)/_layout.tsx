@@ -8,6 +8,7 @@ import CustomHeader from "../../components/CustomHeader";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useUser } from "../../contexts/UserContext";
 import { openOpportunityModal } from "./opportunities";
+import { openSettingsModal } from "./profile";
 
 export default function TabsLayout() {
   const { theme } = useTheme();
@@ -83,7 +84,7 @@ export default function TabsLayout() {
           header: () => (
             <CustomHeader
               rightComponent={
-                <TouchableOpacity onPress={() => console.log("Menu pressed")}>
+                <TouchableOpacity onPress={openSettingsModal}>
                   <Feather name="menu" size={30} color={theme.text} />
                 </TouchableOpacity>
               }
