@@ -42,7 +42,11 @@ export default function Profile() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [tempUsername, setTempUsername] = useState(username);
-  const [bio, setBio] = useState("I love volunteering in my community!");
+  const [bio, setBio] = useState(
+    isAdmin
+      ? "I organize volunteer opportunities to help our community thrive!"
+      : "I love volunteering in my community!"
+  );
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [tempBio, setTempBio] = useState(bio);
   const [location, setLocation] = useState("San Francisco, CA");
@@ -268,136 +272,206 @@ export default function Profile() {
       {/* Stats Section */}
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: theme.text }]}>
-          Volunteer Stats
+          {isAdmin ? "Organization Stats" : "Volunteer Stats"}
         </Text>
         <View style={styles.statsContainer}>
-          <View
-            style={[
-              styles.statCard,
-              { backgroundColor: theme.card, borderColor: theme.border },
-            ]}
-          >
-            <Text style={[styles.statValue, { color: theme.primary }]}>12</Text>
-            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
-              Opportunities
-            </Text>
-          </View>
-          <View
-            style={[
-              styles.statCard,
-              { backgroundColor: theme.card, borderColor: theme.border },
-            ]}
-          >
-            <Text style={[styles.statValue, { color: theme.primary }]}>48</Text>
-            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
-              Hours
-            </Text>
-          </View>
-          <View
-            style={[
-              styles.statCard,
-              { backgroundColor: theme.card, borderColor: theme.border },
-            ]}
-          >
-            <Text style={[styles.statValue, { color: theme.primary }]}>5</Text>
-            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
-              This Month
-            </Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Interests Section */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionTitle, { color: theme.text }]}>
-            Interests
-          </Text>
-          {isEditMode && (
-            <TouchableOpacity onPress={() => setInterestPickerVisible(true)}>
-              <Feather name="edit-2" size={18} color={theme.textSecondary} />
-            </TouchableOpacity>
-          )}
-        </View>
-        {interests.length > 0 ? (
-          <View style={styles.tagsContainer}>
-            {interests.map((interest) => (
+          {isAdmin ? (
+            // Admin Stats
+            <>
               <View
-                key={interest}
                 style={[
-                  styles.tag,
+                  styles.statCard,
                   { backgroundColor: theme.card, borderColor: theme.border },
                 ]}
               >
-                <Text style={[styles.tagText, { color: theme.text }]}>
-                  {interest}
+                <Text style={[styles.statValue, { color: theme.primary }]}>
+                  8
+                </Text>
+                <Text
+                  style={[styles.statLabel, { color: theme.textSecondary }]}
+                >
+                  Active Events
                 </Text>
               </View>
-            ))}
-          </View>
-        ) : (
-          <Text style={[styles.bioText, { color: theme.textSecondary }]}>
-            No interests selected. {isEditMode && "Tap edit to add some!"}
-          </Text>
-        )}
-      </View>
-
-      {/* Achievements Section */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>
-          Achievements
-        </Text>
-        <View style={styles.achievementsContainer}>
-          <View
-            style={[
-              styles.achievementCard,
-              { backgroundColor: theme.card, borderColor: theme.border },
-            ]}
-          >
-            <Text style={styles.achievementIcon}>🏆</Text>
-            <Text style={[styles.achievementTitle, { color: theme.text }]}>
-              First Timer
-            </Text>
-            <Text
-              style={[styles.achievementDesc, { color: theme.textSecondary }]}
-            >
-              Completed your first opportunity
-            </Text>
-          </View>
-          <View
-            style={[
-              styles.achievementCard,
-              { backgroundColor: theme.card, borderColor: theme.border },
-            ]}
-          >
-            <Text style={styles.achievementIcon}>⭐</Text>
-            <Text style={[styles.achievementTitle, { color: theme.text }]}>
-              Rising Star
-            </Text>
-            <Text
-              style={[styles.achievementDesc, { color: theme.textSecondary }]}
-            >
-              Volunteered 10 times
-            </Text>
-          </View>
-          <View
-            style={[
-              styles.achievementCard,
-              { backgroundColor: theme.card, borderColor: theme.border },
-            ]}
-          >
-            <Text style={styles.achievementIcon}>🌟</Text>
-            <Text style={[styles.achievementTitle, { color: theme.text }]}>
-              Community Hero
-            </Text>
-            <Text
-              style={[styles.achievementDesc, { color: theme.textSecondary }]}
-            >
-              Reached 50 volunteer hours
-            </Text>
-          </View>
+              <View
+                style={[
+                  styles.statCard,
+                  { backgroundColor: theme.card, borderColor: theme.border },
+                ]}
+              >
+                <Text style={[styles.statValue, { color: theme.primary }]}>
+                  124
+                </Text>
+                <Text
+                  style={[styles.statLabel, { color: theme.textSecondary }]}
+                >
+                  Volunteers
+                </Text>
+              </View>
+              <View
+                style={[
+                  styles.statCard,
+                  { backgroundColor: theme.card, borderColor: theme.border },
+                ]}
+              >
+                <Text style={[styles.statValue, { color: theme.primary }]}>
+                  15
+                </Text>
+                <Text
+                  style={[styles.statLabel, { color: theme.textSecondary }]}
+                >
+                  This Month
+                </Text>
+              </View>
+            </>
+          ) : (
+            // Volunteer Stats
+            <>
+              <View
+                style={[
+                  styles.statCard,
+                  { backgroundColor: theme.card, borderColor: theme.border },
+                ]}
+              >
+                <Text style={[styles.statValue, { color: theme.primary }]}>
+                  12
+                </Text>
+                <Text
+                  style={[styles.statLabel, { color: theme.textSecondary }]}
+                >
+                  Opportunities
+                </Text>
+              </View>
+              <View
+                style={[
+                  styles.statCard,
+                  { backgroundColor: theme.card, borderColor: theme.border },
+                ]}
+              >
+                <Text style={[styles.statValue, { color: theme.primary }]}>
+                  48
+                </Text>
+                <Text
+                  style={[styles.statLabel, { color: theme.textSecondary }]}
+                >
+                  Hours
+                </Text>
+              </View>
+              <View
+                style={[
+                  styles.statCard,
+                  { backgroundColor: theme.card, borderColor: theme.border },
+                ]}
+              >
+                <Text style={[styles.statValue, { color: theme.primary }]}>
+                  5
+                </Text>
+                <Text
+                  style={[styles.statLabel, { color: theme.textSecondary }]}
+                >
+                  This Month
+                </Text>
+              </View>
+            </>
+          )}
         </View>
       </View>
+
+      {/* Interests Section - Only for Volunteers */}
+      {!isAdmin && (
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: theme.text }]}>
+              Interests
+            </Text>
+            {isEditMode && (
+              <TouchableOpacity onPress={() => setInterestPickerVisible(true)}>
+                <Feather name="edit-2" size={18} color={theme.textSecondary} />
+              </TouchableOpacity>
+            )}
+          </View>
+          {interests.length > 0 ? (
+            <View style={styles.tagsContainer}>
+              {interests.map((interest) => (
+                <View
+                  key={interest}
+                  style={[
+                    styles.tag,
+                    { backgroundColor: theme.card, borderColor: theme.border },
+                  ]}
+                >
+                  <Text style={[styles.tagText, { color: theme.text }]}>
+                    {interest}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          ) : (
+            <Text style={[styles.bioText, { color: theme.textSecondary }]}>
+              No interests selected. {isEditMode && "Tap edit to add some!"}
+            </Text>
+          )}
+        </View>
+      )}
+
+      {/* Achievements Section - Only for Volunteers */}
+      {!isAdmin && (
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: theme.text }]}>
+            Achievements
+          </Text>
+          <View style={styles.achievementsContainer}>
+            <View
+              style={[
+                styles.achievementCard,
+                { backgroundColor: theme.card, borderColor: theme.border },
+              ]}
+            >
+              <Text style={styles.achievementIcon}>🏆</Text>
+              <Text style={[styles.achievementTitle, { color: theme.text }]}>
+                First Timer
+              </Text>
+              <Text
+                style={[styles.achievementDesc, { color: theme.textSecondary }]}
+              >
+                Completed your first opportunity
+              </Text>
+            </View>
+            <View
+              style={[
+                styles.achievementCard,
+                { backgroundColor: theme.card, borderColor: theme.border },
+              ]}
+            >
+              <Text style={styles.achievementIcon}>⭐</Text>
+              <Text style={[styles.achievementTitle, { color: theme.text }]}>
+                Rising Star
+              </Text>
+              <Text
+                style={[styles.achievementDesc, { color: theme.textSecondary }]}
+              >
+                Volunteered 10 times
+              </Text>
+            </View>
+            <View
+              style={[
+                styles.achievementCard,
+                { backgroundColor: theme.card, borderColor: theme.border },
+              ]}
+            >
+              <Text style={styles.achievementIcon}>🌟</Text>
+              <Text style={[styles.achievementTitle, { color: theme.text }]}>
+                Community Hero
+              </Text>
+              <Text
+                style={[styles.achievementDesc, { color: theme.textSecondary }]}
+              >
+                Reached 50 volunteer hours
+              </Text>
+            </View>
+          </View>
+        </View>
+      )}
 
       {/* Edit Profile Button */}
       <View style={styles.section}>
