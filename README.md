@@ -42,10 +42,6 @@ Local Volunteer Finder is a comprehensive volunteer management platform built wi
 
 ![Wireframe](wireframe.jpeg "Wireframe")
 
-## Screenshots
-
-[Add screenshots of your app here showing key features like the map view, list view, profile page, create opportunity modal, etc.]
-
 ## Human Interface Guidelines Implementation
 
 ### Light and Dark Mode Implementation
