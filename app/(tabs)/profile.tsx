@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import AddressAutocomplete from "../../components/AddressAutocomplete";
 import BottomSheetModal from "../../components/BottomSheetModal";
 import ImagePickerButtons from "../../components/ImagePickerButtons";
 import ProfileHeader from "../../components/ProfileHeader";
@@ -43,6 +44,7 @@ export default function Profile() {
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [tempBio, setTempBio] = useState(bio);
   const [location, setLocation] = useState("San Francisco, CA");
+  const [isEditingLocation, setIsEditingLocation] = useState(false);
   const [memberSince] = useState("January 2024");
 
   useEffect(() => {
@@ -92,10 +94,25 @@ export default function Profile() {
     setIsEditingBio(true);
   };
 
+  const handleLocationSelected = (
+    address: string,
+    coordinates: { latitude: number; longitude: number }
+  ) => {
+    console.log("handleLocationSelected called with:", address, coordinates);
+    setLocation(address);
+    setIsEditingLocation(false);
+  };
+
+  const handleStartEditingLocation = () => {
+    setIsEditingLocation(true);
+  };
+
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: theme.background }]}
       contentContainerStyle={styles.contentContainer}
+      keyboardShouldPersistTaps="handled"
+      nestedScrollEnabled={true}
     >
       <ProfileHeader
         uri={profileImageUri}
@@ -191,18 +208,44 @@ export default function Profile() {
 
       {/* Location Section */}
       <View style={styles.section}>
-        <View style={styles.infoRow}>
-          <Feather name="map-pin" size={20} color={theme.textSecondary} />
-          <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-            {location}
-          </Text>
-        </View>
-        <View style={styles.infoRow}>
-          <Feather name="calendar" size={20} color={theme.textSecondary} />
-          <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-            Member since {memberSince}
-          </Text>
-        </View>
+        {isEditingLocation ? (
+          <View style={styles.locationEditContainer}>
+            <View style={styles.sectionHeader}>
+              <Text style={[styles.sectionTitle, { color: theme.text }]}>
+                Edit Location
+              </Text>
+              <TouchableOpacity onPress={() => setIsEditingLocation(false)}>
+                <Feather name="x" size={20} color={theme.textSecondary} />
+              </TouchableOpacity>
+            </View>
+            <AddressAutocomplete
+              onPlaceSelected={(address, coordinates) =>
+                handleLocationSelected(address, coordinates)
+              }
+              placeholder="Enter your location..."
+              initialValue={location}
+            />
+          </View>
+        ) : (
+          <>
+            <TouchableOpacity
+              style={styles.infoRow}
+              onPress={handleStartEditingLocation}
+            >
+              <Feather name="map-pin" size={20} color={theme.textSecondary} />
+              <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                {location}
+              </Text>
+              <Feather name="edit-2" size={16} color={theme.textSecondary} />
+            </TouchableOpacity>
+            <View style={styles.infoRow}>
+              <Feather name="calendar" size={20} color={theme.textSecondary} />
+              <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                Member since {memberSince}
+              </Text>
+            </View>
+          </>
+        )}
       </View>
 
       {/* Stats Section */}
@@ -445,6 +488,12 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 15,
+    flex: 1,
+  },
+  locationEditContainer: {
+    gap: 12,
+    zIndex: 1000,
+    elevation: 1000,
   },
   tagsContainer: {
     flexDirection: "row",

@@ -29,21 +29,33 @@ export default function AddressAutocomplete({
   initialValue = "",
 }: Props) {
   const { theme } = useTheme();
+  const ref = React.useRef<any>(null);
+
+  React.useEffect(() => {
+    if (ref.current && initialValue) {
+      ref.current.setAddressText(initialValue);
+    }
+  }, [initialValue]);
 
   return (
     <GooglePlacesAutocomplete
+      ref={ref}
       placeholder={placeholder}
       fetchDetails={true}
       listViewDisplayed="auto"
       suppressDefaultStyles={false}
       onPress={(data, details = null) => {
+        console.log("Place selected:", data.description);
         if (details && details.geometry) {
           const address = data.description;
           const coordinates = {
             latitude: details.geometry.location.lat,
             longitude: details.geometry.location.lng,
           };
+          console.log("Calling onPlaceSelected with:", address, coordinates);
           onPlaceSelected(address, coordinates);
+        } else {
+          console.log("No details or geometry found");
         }
       }}
       onFail={(error) => {
@@ -94,6 +106,12 @@ export default function AddressAutocomplete({
           marginTop: 4,
           borderWidth: 1,
           borderColor: theme.border,
+          position: "absolute",
+          top: 50,
+          left: 0,
+          right: 0,
+          zIndex: 1000,
+          elevation: 5,
         },
         row: {
           backgroundColor: theme.card,
