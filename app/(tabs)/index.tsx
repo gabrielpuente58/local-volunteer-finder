@@ -115,7 +115,14 @@ export default function Index() {
   const filteredOpportunities = useMemo(() => {
     let filtered = opportunities;
 
-    // Skip filtering for admin users
+    // Filter by search query
+    if (query.trim()) {
+      filtered = filtered.filter((opp) =>
+        opp.name.toLowerCase().includes(query.toLowerCase())
+      );
+    }
+
+    // Skip other filtering for admin users
     if (isAdmin) {
       return filtered;
     }
@@ -143,7 +150,14 @@ export default function Index() {
     }
 
     return filtered;
-  }, [opportunities, selectedCategories, maxDistance, userLocation, isAdmin]);
+  }, [
+    opportunities,
+    selectedCategories,
+    maxDistance,
+    userLocation,
+    isAdmin,
+    query,
+  ]);
 
   const filteredOpportunitiesWithCoords = useMemo(() => {
     return opportunitiesWithCoords.filter((opp) =>
@@ -260,6 +274,49 @@ export default function Index() {
           </TouchableOpacity>
         )}
       </View>
+
+      {/* Search Results Dropdown */}
+      {query.trim() && filteredOpportunities.length > 0 && (
+        <View
+          style={[
+            styles.searchResults,
+            { backgroundColor: theme.card, borderColor: theme.border },
+          ]}
+        >
+          <ScrollView
+            style={styles.searchResultsScroll}
+            keyboardShouldPersistTaps="handled"
+          >
+            {filteredOpportunities.map((opp) => (
+              <TouchableOpacity
+                key={opp.id}
+                style={[
+                  styles.searchResultItem,
+                  { borderBottomColor: theme.border },
+                ]}
+                onPress={() => {
+                  setQuery("");
+                  setSelectedOpportunity(opp);
+                  setDetailModalVisible(true);
+                }}
+              >
+                <Text style={[styles.searchResultName, { color: theme.text }]}>
+                  {opp.name}
+                </Text>
+                <Text
+                  style={[
+                    styles.searchResultLocation,
+                    { color: theme.textSecondary },
+                  ]}
+                  numberOfLines={1}
+                >
+                  {opp.location}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      )}
 
       {/* Tab Bar */}
       <View
@@ -426,6 +483,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 6,
     gap: 8,
+  },
+  searchResults: {
+    position: "absolute",
+    top: 130,
+    left: 16,
+    right: 16,
+    maxHeight: 300,
+    borderRadius: 8,
+    borderWidth: 1,
+    zIndex: 1000,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  searchResultsScroll: {
+    maxHeight: 300,
+  },
+  searchResultItem: {
+    padding: 12,
+    borderBottomWidth: 1,
+  },
+  searchResultName: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 4,
+  },
+  searchResultLocation: {
+    fontSize: 14,
   },
   filterIconButton: {
     width: 44,
