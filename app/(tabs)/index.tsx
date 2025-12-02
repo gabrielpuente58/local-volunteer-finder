@@ -387,20 +387,86 @@ export default function Index() {
                   latitude: opportunity.coordinates!.latitude,
                   longitude: opportunity.coordinates!.longitude,
                 }}
-                pinColor="red"
-                title={opportunity.name}
               >
-                <Callout>
-                  <View style={styles.callout}>
-                    <Text style={styles.calloutTitle}>{opportunity.name}</Text>
-                    <Text style={styles.calloutLocation}>
-                      {opportunity.location}
+                <View style={styles.customMarker}>
+                  {/* Outer pulse ring */}
+                  <View style={styles.markerPulse} />
+                  {/* Main marker circle */}
+                  <View style={styles.markerCircle}>
+                    <Feather name="heart" size={18} color="#FFFFFF" />
+                  </View>
+                </View>
+                <Callout
+                  tooltip
+                  onPress={() => {
+                    setSelectedOpportunity(opportunity);
+                    setDetailModalVisible(true);
+                  }}
+                >
+                  <View
+                    style={[
+                      styles.callout,
+                      {
+                        backgroundColor: theme.card,
+                        borderColor: theme.border,
+                      },
+                    ]}
+                  >
+                    <Text style={[styles.calloutTitle, { color: theme.text }]}>
+                      {opportunity.name}
                     </Text>
-                    <Text style={styles.calloutDate}>
-                      {opportunity.dateTime}
-                    </Text>
-                    <Text style={styles.calloutPeople}>
-                      {opportunity.peopleNeeded} volunteers needed
+                    <View style={styles.calloutRow}>
+                      <Feather
+                        name="map-pin"
+                        size={12}
+                        color={theme.textSecondary}
+                      />
+                      <Text
+                        style={[
+                          styles.calloutLocation,
+                          { color: theme.textSecondary },
+                        ]}
+                        numberOfLines={1}
+                      >
+                        {opportunity.location}
+                      </Text>
+                    </View>
+                    <View style={styles.calloutRow}>
+                      <Feather
+                        name="calendar"
+                        size={12}
+                        color={theme.textSecondary}
+                      />
+                      <Text
+                        style={[
+                          styles.calloutDate,
+                          { color: theme.textSecondary },
+                        ]}
+                      >
+                        {opportunity.dateTime}
+                      </Text>
+                    </View>
+                    <View
+                      style={[
+                        styles.calloutFooter,
+                        { backgroundColor: theme.primary + "20" },
+                      ]}
+                    >
+                      <Feather name="users" size={14} color={theme.primary} />
+                      <Text
+                        style={[styles.calloutPeople, { color: theme.primary }]}
+                      >
+                        {opportunity.volunteersSignedUp || 0}/
+                        {opportunity.peopleNeeded} volunteers
+                      </Text>
+                    </View>
+                    <Text
+                      style={[
+                        styles.calloutTapHint,
+                        { color: theme.textSecondary },
+                      ]}
+                    >
+                      Tap for details
                     </Text>
                   </View>
                 </Callout>
@@ -574,28 +640,82 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
   },
+  customMarker: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 50,
+    height: 50,
+  },
+  markerPulse: {
+    position: "absolute",
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#FF6B35",
+    opacity: 0.3,
+  },
+  markerCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#FF6B35",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 8,
+  },
   callout: {
-    width: 200,
-    padding: 8,
+    width: 260,
+    padding: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   calloutTitle: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: "700",
-    marginBottom: 4,
+    marginBottom: 10,
+    lineHeight: 22,
+  },
+  calloutRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 6,
   },
   calloutLocation: {
-    fontSize: 12,
-    color: "#666",
-    marginBottom: 2,
+    fontSize: 13,
+    flex: 1,
   },
   calloutDate: {
-    fontSize: 12,
-    color: "#666",
-    marginBottom: 2,
+    fontSize: 13,
+  },
+  calloutFooter: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 6,
   },
   calloutPeople: {
-    fontSize: 12,
-    fontWeight: "600",
-    marginTop: 4,
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  calloutTapHint: {
+    fontSize: 11,
+    fontStyle: "italic",
+    textAlign: "center",
+    marginTop: 8,
   },
 });
