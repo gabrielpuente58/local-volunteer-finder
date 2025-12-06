@@ -229,7 +229,7 @@ export default function Index() {
       <View
         style={[
           styles.topBar,
-          { backgroundColor: theme.background, paddingTop: 60 },
+          { backgroundColor: theme.background, paddingTop: 50 },
         ]}
       />
 
@@ -249,6 +249,7 @@ export default function Index() {
           <TouchableOpacity
             style={[styles.addButton, { backgroundColor: theme.primary }]}
             onPress={() => setCreateModalVisible(true)}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
             <Feather name="plus" size={24} color="#FFFFFF" />
           </TouchableOpacity>
@@ -259,6 +260,7 @@ export default function Index() {
               { backgroundColor: theme.card, borderColor: theme.border },
             ]}
             onPress={() => setFiltersVisible(true)}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
             <Feather name="filter" size={20} color={theme.text} />
             {activeFiltersCount > 0 && (

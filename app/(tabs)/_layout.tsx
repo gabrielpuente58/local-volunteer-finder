@@ -105,7 +105,10 @@ export default function TabsLayout() {
           header: () => (
             <CustomHeader
               rightComponent={
-                <TouchableOpacity onPress={openSettingsModal}>
+                <TouchableOpacity
+                  onPress={openSettingsModal}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
                   <Feather name="menu" size={30} color={theme.text} />
                 </TouchableOpacity>
               }

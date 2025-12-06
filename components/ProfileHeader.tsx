@@ -23,7 +23,11 @@ export default function ProfileHeader({
   return (
     <View style={styles.container}>
       {onPress ? (
-        <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+        <TouchableOpacity
+          onPress={onPress}
+          activeOpacity={0.7}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
           <ProfileImage uri={uri} />
         </TouchableOpacity>
       ) : (

@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 10,
-    paddingTop: 40,
+    paddingTop: 50,
     borderBottomWidth: 1,
   },
   leftSection: {
@@ -52,12 +52,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   username: {
-    paddingTop: 10,
     fontSize: 16,
     fontWeight: "600",
   },
   rightSection: {
-    paddingTop: 10,
     alignItems: "center",
     justifyContent: "center",
   },

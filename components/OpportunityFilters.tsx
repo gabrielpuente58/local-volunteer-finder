@@ -71,7 +71,11 @@ export default function OpportunityFilters({
           <Text style={[styles.headerTitle, { color: theme.text }]}>
             Filters
           </Text>
-          <TouchableOpacity onPress={handleReset} style={styles.headerButton}>
+          <TouchableOpacity
+            onPress={handleReset}
+            style={styles.headerButton}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             <Text style={[styles.resetText, { color: theme.primary }]}>
               Reset
             </Text>
@@ -191,7 +195,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingTop: 60,
+    paddingTop: 50,
     paddingBottom: 16,
     paddingHorizontal: 20,
     borderBottomWidth: 1,

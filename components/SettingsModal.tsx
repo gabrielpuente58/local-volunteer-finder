@@ -44,7 +44,11 @@ export default function SettingsModal({ visible, onClose }: Props) {
           <Text style={[styles.headerTitle, { color: theme.text }]}>
             Settings
           </Text>
-          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+          <TouchableOpacity
+            onPress={onClose}
+            style={styles.closeButton}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
             <Feather name="x" size={28} color={theme.text} />
           </TouchableOpacity>
         </View>
@@ -275,7 +279,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 60,
+    paddingTop: 50,
     paddingBottom: 16,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
@@ -287,7 +291,7 @@ const styles = StyleSheet.create({
   closeButton: {
     position: "absolute",
     right: 20,
-    top: 60,
+    top: 50,
   },
   content: {
     flex: 1,
